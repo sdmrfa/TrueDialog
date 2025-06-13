@@ -1,0 +1,5 @@
+location           = "Australia Central"
+apim_name          = "tdtapim"
+resource_group_name = "tdtrg"
+function_app_name = "tdtfn"
+publisher_email    = "maruf@growtomation.in"
