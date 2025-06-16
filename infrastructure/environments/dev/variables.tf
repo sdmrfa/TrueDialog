@@ -33,7 +33,7 @@ variable "publisher_name" {
 variable "publisher_email" {
   description = "Email address of the publisher"
   type        = string
-  default     = "maruf@growtomation.in"
+  default     = "prag@growtomation.in"
 }
 
 variable "apim_sku" {
