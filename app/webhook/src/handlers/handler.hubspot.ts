@@ -14,4 +14,4 @@ import { logEvent } from "../utils/logger";
 export const handleHubSpotEvent = async (req: HttpRequest, context: InvocationContext) => {
     logEvent(context, "info", "hello from hubspot handler");
     return { event: "message", data: "Logged from HubSpot handler" };
-};
+}; 

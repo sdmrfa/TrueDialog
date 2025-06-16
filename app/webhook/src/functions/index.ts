@@ -32,6 +32,12 @@ export async function WebhookHandler(request: HttpRequest, context: InvocationCo
 
     const result = await handler(request, context);
     logEvent(context, "info", source, result.event, result.data);
+
+    return {
+        status: 200,
+        body: JSON.stringify(result),
+        headers: { "Content-Type": "application/json" }
+    };
 };
 
 // Register the HTTP trigger
