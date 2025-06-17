@@ -1,92 +1,18 @@
-# File: Infrastructure/modules/apim/main.tf
-
+# Azure API Management Instance
 resource "azurerm_api_management" "main" {
   name                = var.apim_name
-  resource_group_name = var.resource_group_name
   location            = var.location
+  resource_group_name = var.resource_group_name
   publisher_name      = var.publisher_name
   publisher_email     = var.publisher_email
   sku_name            = var.apim_sku
-
   identity {
     type = "SystemAssigned"
   }
 }
-
-# Backend Services (Azure App Service)
-
-resource "azurerm_api_management_api" "one_to_one" {
-  name                = "one-to-one-sms"
-  resource_group_name = var.resource_group_name
-  api_management_name = azurerm_api_management.main.name
-  revision            = "1"
-  display_name        = "One-to-One SMS API"
-  path                = "one-to-one"
-  protocols           = ["https"]
-  service_url         = "${var.backend_url}/one-to-one"
-}
-
-resource "azurerm_api_management_api" "mass" {
-  name                = "mass-sms"
-  resource_group_name = var.resource_group_name
-  api_management_name = azurerm_api_management.main.name
-  revision            = "1"
-  display_name        = "Mass SMS API"
-  path                = "mass"
-  protocols           = ["https"]
-  service_url         = "${var.backend_url}/mass"
-}
-
-resource "azurerm_api_management_api_policy" "one_to_one_policy" {
-  api_name            = azurerm_api_management_api.one_to_one.name
-  api_management_name = azurerm_api_management.main.name
-  resource_group_name = var.resource_group_name
-
-  xml_content = <<XML
-<policies>
-  <inbound>
-    <base />
-    <set-backend-service base-url="${var.backend_url}/one-to-one" />
-  </inbound>
-  <backend>
-    <base />
-  </backend>
-  <outbound>
-    <base />
-  </outbound>
-  <on-error>
-    <base />
-  </on-error>
-</policies>
-XML
-}
-
-resource "azurerm_api_management_api_policy" "mass_policy" {
-  api_name            = azurerm_api_management_api.mass.name
-  api_management_name = azurerm_api_management.main.name
-  resource_group_name = var.resource_group_name
-
-  xml_content = <<XML
-<policies>
-  <inbound>
-    <base />
-    <set-backend-service base-url="${var.backend_url}/mass" />
-  </inbound>
-  <backend>
-    <base />
-  </backend>
-  <outbound>
-    <base />
-  </outbound>
-  <on-error>
-    <base />
-  </on-error>
-</policies>
-XML
-}
-
-# Frontend Services (Azure App Service)
-
+# ========================
+# FRONTEND API
+# ========================
 resource "azurerm_api_management_api" "frontend" {
   name                = "frontend-app"
   resource_group_name = var.resource_group_name
@@ -95,19 +21,17 @@ resource "azurerm_api_management_api" "frontend" {
   display_name        = "Frontend App"
   path                = "frontend"
   protocols           = ["https"]
-  service_url         = "${var.frontend_url}"
+  service_url         = var.frontend_url
 }
-
 resource "azurerm_api_management_api_policy" "frontend_policy" {
   api_name            = azurerm_api_management_api.frontend.name
   api_management_name = azurerm_api_management.main.name
   resource_group_name = var.resource_group_name
-
   xml_content = <<XML
 <policies>
   <inbound>
     <base />
-     <set-backend-service base-url="${var.frontend_url}" />
+    <set-backend-service base-url="${var.frontend_url}" />
   </inbound>
   <backend>
     <base />
@@ -121,9 +45,70 @@ resource "azurerm_api_management_api_policy" "frontend_policy" {
 </policies>
 XML
 }
-
-# Webhook Service (Azure Functions)
-
+resource "azurerm_api_management_api_operation" "frontend_get_root" {
+  operation_id        = "get-frontend"
+  api_name            = azurerm_api_management_api.frontend.name
+  api_management_name = azurerm_api_management.main.name
+  resource_group_name = var.resource_group_name
+  display_name = "GET Frontend Root"
+  method       = "GET"
+  url_template = "/"
+  response {
+    status_code      = 200
+    description = "Frontend Root Loaded"
+  }
+}
+# ========================
+# BACKEND API
+# ========================
+resource "azurerm_api_management_api" "backend" {
+  name                = "backend-api"
+  resource_group_name = var.resource_group_name
+  api_management_name = azurerm_api_management.main.name
+  revision            = "1"
+  display_name        = "Backend API"
+  path                = "backend"
+  protocols           = ["https"]
+  service_url         = var.backend_url
+}
+resource "azurerm_api_management_api_policy" "backend_policy" {
+  api_name            = azurerm_api_management_api.backend.name
+  api_management_name = azurerm_api_management.main.name
+  resource_group_name = var.resource_group_name
+  xml_content = <<XML
+<policies>
+  <inbound>
+    <base />
+    <set-backend-service base-url="${var.backend_url}" />
+  </inbound>
+  <backend>
+    <base />
+  </backend>
+  <outbound>
+    <base />
+  </outbound>
+  <on-error>
+    <base />
+  </on-error>
+</policies>
+XML
+}
+resource "azurerm_api_management_api_operation" "backend_get" {
+  operation_id        = "get-backend"
+  api_name            = azurerm_api_management_api.backend.name
+  api_management_name = azurerm_api_management.main.name
+  resource_group_name = var.resource_group_name
+  display_name = "GET Backend Endpoint"
+  method       = "GET"
+  url_template = "/"
+  response {
+    status_code      = 200
+    description = "Backend Data Fetched"
+  }
+}
+# ========================
+# WEBHOOK API
+# ========================
 resource "azurerm_api_management_api" "webhook" {
   name                = "webhook-api"
   resource_group_name = var.resource_group_name
@@ -132,47 +117,12 @@ resource "azurerm_api_management_api" "webhook" {
   display_name        = "Webhook API"
   path                = "api/webhook"
   protocols           = ["https"]
-  service_url         = "${var.webhook_url}/api/webhook"
+  service_url         = var.webhook_url
 }
-
-resource "azurerm_api_management_api_operation" "webhook_truedialog_post" {
-  operation_id        = "webhook-truedialog-post"
-  api_name            = azurerm_api_management_api.webhook.name
-  api_management_name = azurerm_api_management.main.name
-  resource_group_name = var.resource_group_name
-  display_name        = "TrueDialog Webhook"
-  method              = "POST"
-  url_template        = "/truedialog"
-  description         = "Handles TrueDialog opt-out webhook events"
-}
-
-resource "azurerm_api_management_api_operation" "webhook_hubspot_post" {
-  operation_id        = "webhook-hubspot-post"
-  api_name            = azurerm_api_management_api.webhook.name
-  api_management_name = azurerm_api_management.main.name
-  resource_group_name = var.resource_group_name
-  display_name        = "HubSpot Webhook POST"
-  method              = "POST"
-  url_template        = "/hubspot"
-  description         = "Handles HubSpot opt-out webhook events"
-}
-
-resource "azurerm_api_management_api_operation" "webhook_hubspot_get" {
-  operation_id        = "webhook-hubspot-get"
-  api_name            = azurerm_api_management_api.webhook.name
-  api_management_name = azurerm_api_management.main.name
-  resource_group_name = var.resource_group_name
-  display_name        = "HubSpot Webhook GET"
-  method              = "GET"
-  url_template        = "/hubspot"
-  description         = "Handles HubSpot webhook validation requests"
-}
-
 resource "azurerm_api_management_api_policy" "webhook_policy" {
   api_name            = azurerm_api_management_api.webhook.name
   api_management_name = azurerm_api_management.main.name
   resource_group_name = var.resource_group_name
-
   xml_content = <<XML
 <policies>
   <inbound>
@@ -190,4 +140,25 @@ resource "azurerm_api_management_api_policy" "webhook_policy" {
   </on-error>
 </policies>
 XML
+}
+resource "azurerm_api_management_api_operation" "webhook_post_dynamic" {
+  operation_id        = "post-webhook-dynamic"
+  api_name            = azurerm_api_management_api.webhook.name
+  api_management_name = azurerm_api_management.main.name
+  resource_group_name = var.resource_group_name
+  display_name = "POST Webhook"
+  method       = "POST"
+  url_template = "/{source}"
+  template_parameter {
+    name     = "source"
+    required = true
+    type     = "string"
+  }
+  request {
+    description = "Dynamic Webhook POST"
+  }
+  response {
+    status_code = 200
+    description = "Webhook from dynamic source processed"
+  }
 }

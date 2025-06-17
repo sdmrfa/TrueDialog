@@ -4,7 +4,7 @@ import Install from '../pages/Install';
 
 export const router = createBrowserRouter([
   {
-    path: '/',
+    path: '/associate',
     element: <Associate />,
   },
   {
