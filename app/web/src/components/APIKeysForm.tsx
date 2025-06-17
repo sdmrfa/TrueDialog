@@ -50,7 +50,7 @@ const APIKeysForm: React.FC<APIKeysFormProps> = ({
     
     try {
       const result = await AxiosInstance.post(
-        "/workflows/create-hubspot-true-dialog-association",
+        "/auth/associate",
         {
           ...formValues,
           portalId,
