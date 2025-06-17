@@ -19,7 +19,7 @@ resource "azurerm_linux_web_app" "frontend_web_app" {
       node_version = var.node_version_asp
     }
     
-    app_command_line = "npm run build && npx serve -s build"
+    app_command_line = "npm install && npm start"
     always_on = var.always_on
   }
 

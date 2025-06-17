@@ -130,7 +130,7 @@ variable "backend_app_port" {
 variable "frontend_app_port" {
   description = "Port the application listens on"
   type        = string
-  default     = "5173"
+  default     = "8080"
 }
 
 variable "function_sku" {

@@ -19,7 +19,7 @@ resource "azurerm_linux_web_app" "backend_web_app" {
       node_version = var.node_version_asp
     }
     
-    app_command_line = "npm install && node dist/app.js"
+    app_command_line = "npm install && npm start"
     always_on = var.always_on
   }
 
