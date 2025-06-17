@@ -13,6 +13,8 @@ resource "azurerm_api_management" "main" {
   }
 }
 
+# Backend Services (Azure App Service)
+
 resource "azurerm_api_management_api" "one_to_one" {
   name                = "one-to-one-sms"
   resource_group_name = var.resource_group_name
@@ -83,7 +85,45 @@ resource "azurerm_api_management_api_policy" "mass_policy" {
 XML
 }
 
-# Webhook API (routed to Function App)
+# Frontend Services (Azure App Service)
+
+resource "azurerm_api_management_api" "frontend" {
+  name                = "frontend-app"
+  resource_group_name = var.resource_group_name
+  api_management_name = azurerm_api_management.main.name
+  revision            = "1"
+  display_name        = "Frontend App"
+  path                = "frontend"
+  protocols           = ["https"]
+  service_url         = "${var.frontend_url}"
+}
+
+resource "azurerm_api_management_api_policy" "frontend_policy" {
+  api_name            = azurerm_api_management_api.frontend.name
+  api_management_name = azurerm_api_management.main.name
+  resource_group_name = var.resource_group_name
+
+  xml_content = <<XML
+<policies>
+  <inbound>
+    <base />
+     <set-backend-service base-url="${var.frontend_url}" />
+  </inbound>
+  <backend>
+    <base />
+  </backend>
+  <outbound>
+    <base />
+  </outbound>
+  <on-error>
+    <base />
+  </on-error>
+</policies>
+XML
+}
+
+# Webhook Service (Azure Functions)
+
 resource "azurerm_api_management_api" "webhook" {
   name                = "webhook-api"
   resource_group_name = var.resource_group_name
@@ -92,7 +132,7 @@ resource "azurerm_api_management_api" "webhook" {
   display_name        = "Webhook API"
   path                = "api/webhook"
   protocols           = ["https"]
-  service_url         = "${var.webhook_backend_url}/api/webhook"
+  service_url         = "${var.webhook_url}/api/webhook"
 }
 
 resource "azurerm_api_management_api_operation" "webhook_truedialog_post" {
@@ -137,7 +177,7 @@ resource "azurerm_api_management_api_policy" "webhook_policy" {
 <policies>
   <inbound>
     <base />
-    <set-backend-service base-url="${var.webhook_backend_url}/api/webhook" />
+    <set-backend-service base-url="${var.webhook_url}/api/webhook" />
   </inbound>
   <backend>
     <base />

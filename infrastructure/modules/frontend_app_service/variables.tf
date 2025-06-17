@@ -1,11 +1,11 @@
-# File: Infrastructure/modules/apim/variables.tf
+# File: Infrastructure/modules/frontend_app_service/variables.tf
 
 variable "app_service_plan_name" {
   description = "Name of the App Service Plan"
   type        = string
 }
 
-variable "app_name" {
+variable "frontend_app_name" {
   description = "Name of the Web App"
   type        = string
 }
@@ -32,7 +32,7 @@ variable "node_version_asp" {
   default     = "20-lts"
 }
 
-variable "app_port" {
+variable "frontend_app_port" {
   description = "Port the application listens on"
   type        = string
   default     = "8080"

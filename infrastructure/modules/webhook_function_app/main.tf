@@ -1,7 +1,7 @@
-# File: Infrastructure/modules/function_app/main.tf
+# File: Infrastructure/modules/webhook_function_app/main.tf
 
 resource "azurerm_storage_account" "storage" {
-  name                     = "${var.function_app_name}storage"
+  name                     = "${var.webhook_function_app_name}storage"
   resource_group_name      = var.resource_group_name
   location                 = var.location
   account_tier             = "Standard"
@@ -9,15 +9,15 @@ resource "azurerm_storage_account" "storage" {
 }
 
 resource "azurerm_service_plan" "function_plan" {
-  name                = "${var.function_app_name}plan"
+  name                = "${var.webhook_function_app_name}plan"
   location            = var.location
   resource_group_name = var.resource_group_name
   os_type             = "Linux"
   sku_name            = var.function_sku
 }
 
-resource "azurerm_linux_function_app" "function_app" {
-  name                = var.function_app_name
+resource "azurerm_linux_function_app" "webhook_function_app" {
+  name                = var.webhook_function_app_name
   location            = var.location
   resource_group_name = var.resource_group_name
   service_plan_id     = azurerm_service_plan.function_plan.id

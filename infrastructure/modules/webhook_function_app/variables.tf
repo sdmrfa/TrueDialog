@@ -1,6 +1,6 @@
-# File: Infrastructure/modules/function_app/variables.tf
+# File: Infrastructure/modules/webhook_function_app/variables.tf
 
-variable "function_app_name" {
+variable "webhook_function_app_name" {
   description = "Name of the Function App"
   type        = string
 }

@@ -35,7 +35,12 @@ variable "backend_url" {
   type        = string
 }
 
-variable "webhook_backend_url" {
+variable "frontend_url" {
+  description = "Frontend URL for the APIs (e.g., App Service URL)"
+  type        = string
+}
+
+variable "webhook_url" {
   description = "Backend URL for the webhook API (e.g., Function App URL)"
   type        = string
 }
