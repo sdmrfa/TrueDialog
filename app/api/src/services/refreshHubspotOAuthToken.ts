@@ -1,4 +1,4 @@
-import axiosClient from '../services/axios';
+import axiosClient from './axios';
 import dotenv from 'dotenv';
 dotenv.config();
 
@@ -34,7 +34,7 @@ const refreshHubspotOAuthToken = async ( refreshToken: string ): Promise<Hubspot
         );
         return refreshedHubspotToken.data;
     } catch ( err ) {
-        console.error( '❌ Error refreshing HubSpot token:', err );
+        console.error( 'Error refreshing HubSpot token:', err );
         throw new Error( 'Failed to refresh HubSpot token' );
     }
 };

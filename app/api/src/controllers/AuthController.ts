@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { createHubspotProperties } from '../services/createHubspotProperties';
-import TrueDialog from '../services/trueDialog'
+import TrueDialog from '../services/trueDialogClient'
 import axios from 'axios';
 import dotenv from 'dotenv';
 dotenv.config();

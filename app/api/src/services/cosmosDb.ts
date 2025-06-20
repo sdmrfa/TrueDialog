@@ -1,4 +1,5 @@
 import { CosmosClient } from '@azure/cosmos';
+import { HubspotTrueDialogAccountInfo } from '../types/hubspot-true-dialog-association-info'
 
 const cosmosClient = new CosmosClient( {
   endpoint: process.env.COSMOS_DB_ENDPOINT!,
@@ -103,16 +104,34 @@ export async function getClientInfo( userEmail: string, portalId: string ) {
 }
 
 export async function getRefreshTokenByPortalId( portalId: string ): Promise<string | null> {
+
+
   const query = {
-    query: 'SELECT c.tokens.refreshToken FROM c WHERE c.portalId = @portalId',
-    parameters: [{ name: '@portalId', value: portalId }]
+    query: 'SELECT c.refreshToken FROM c WHERE c.portalId = @portalId',
+    parameters: [{ name: '@portalId', value:  portalId }]
   };
-
   const { resources } = await container.items.query( query ).fetchAll();
-
   if ( resources.length > 0 && resources[0].refreshToken ) {
     return resources[0].refreshToken;
   }
 
   return null;
 };
+
+export async function getClientHubspotTrueDialogAccountInfoById(
+  id: string
+): Promise<HubspotTrueDialogAccountInfo | null> {
+  const query = {
+    query: 'SELECT * FROM c WHERE c.id = @id',
+    parameters: [{ name: '@id', value: id }]
+  };
+
+  const { resources } = await container.items.query( query ).fetchAll();
+
+  if ( resources.length > 0 ) {
+    return resources[0] as HubspotTrueDialogAccountInfo;
+  }
+
+  return null;
+}
+
