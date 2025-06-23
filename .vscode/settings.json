@@ -1,7 +1,8 @@
 {
-  "eslint.workingDirectories": [
-    {
-      "mode": "auto"
-    }
-  ]
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/e39de7c6-22af-4395-94d1-0c8f4a74df03/resourceGroups/tdrg/providers/Microsoft.Web/sites/tdrgswa",
+    "appService.deploySubpath": "apps/server"
 }
