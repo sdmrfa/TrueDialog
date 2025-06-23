@@ -1,10 +1,10 @@
 {
   "name": "server",
-  "main": "app.js",
+  "main": "dist/app.js",
   "scripts": {
-    "dev": "concurrently \"npm run build\" \"npm run start\"",
+    "dev": "pnpm run build && pnpm run start",
     "start": "nodemon dist/app.js",
-    "build": "tsc -w"
+    "build": "tsc"
   },
   "packageManager": "pnpm@10.12.2",
   "dependencies": {
@@ -13,7 +13,6 @@
   "devDependencies": {
     "@types/express": "^5.0.3",
     "@types/node": "^24.0.3",
-    "concurrently": "^9.2.0",
     "nodemon": "^3.1.10",
     "ts-node": "^10.9.2",
     "typescript": "^5.8.3"

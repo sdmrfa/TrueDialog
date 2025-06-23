@@ -4,7 +4,9 @@
   "author": "sdmrf",
   "scripts": {
     "dev": "turbo run dev",
-    "build": "turbo run build"
+    "build": "turbo run build",
+    "clean": "turbo run clean"
+
   },
   "packageManager": "pnpm@10.12.2",
   "engines": {

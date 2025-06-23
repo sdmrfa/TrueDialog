@@ -1,0 +1,67 @@
+name: Deploy Server to Azure
+
+on:
+  push:
+    branches:
+      - sdmrf/revamp
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20.x'
+          cache: 'pnpm'
+
+      - name: Enable pnpm
+        run: corepack enable && corepack prepare pnpm@10.12.2 --activate
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build server
+        run: pnpm --filter server build
+
+      - name: Prepare deployment package
+        run: |
+          mkdir deploy
+          cp apps/server/package.json deploy/
+          cp -r apps/server/dist deploy/dist
+          cd deploy
+          pnpm install --prod --ignore-scripts --ignore-workspace --prefix
+          cd ..
+          zip -r release.zip deploy
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: server-app
+          path: release.zip
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: server-app
+
+      - name: Unzip package
+        run: unzip release.zip
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'tdrgswa'
+          slot-name: 'development'
+          package: ./deploy
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
