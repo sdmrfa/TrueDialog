@@ -22,7 +22,10 @@ resource "azurerm_linux_web_app" "server_web_app" {
   }
 
   app_settings = {
-    "WEBSITES_PORT"   = var.server_app_port
+    "SCM_DO_BUILD_DURING_DEPLOYMENT" = "true"
+    "WEBSITE_NODE_DEFAULT_VERSION"   = var.node_version_asp
+    "NPM_CONFIG_PRODUCTION"          = "true"
+    "WEBSITES_PORT"                  = var.server_app_port
   }
 
   identity {
