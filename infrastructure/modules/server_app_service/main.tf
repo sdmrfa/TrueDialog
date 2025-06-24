@@ -17,12 +17,13 @@ resource "azurerm_linux_web_app" "server_web_app" {
       node_version = var.node_version_asp
     }
 
+    app_command_line = "npm install && npm start"
     always_on         = var.always_on
     health_check_path = "/health"
   }
 
   app_settings = {
-    "SCM_DO_BUILD_DURING_DEPLOYMENT" = "true"
+    "SCM_DO_BUILD_DURING_DEPLOYMENT" = "false"
     "WEBSITE_NODE_DEFAULT_VERSION"   = var.node_version_asp
     "NPM_CONFIG_PRODUCTION"          = "true"
     "WEBSITES_PORT"                  = var.server_app_port
