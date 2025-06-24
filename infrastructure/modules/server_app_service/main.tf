@@ -38,7 +38,6 @@ resource "azurerm_linux_web_app" "server_web_app" {
   identity {
     type = "SystemAssigned"
   }
-
 }
 
 resource "azurerm_monitor_autoscale_setting" "autoscale" {

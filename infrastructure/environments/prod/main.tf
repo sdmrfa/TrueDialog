@@ -1,7 +1,16 @@
-# File: Infrastructure/environment/Prod/main.tf
+# File: Infrastructure/environment/Dev/main.tf
 
 provider "azurerm" {
   features {}
+}
+
+terraform {
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 3.0"
+    }
+  }
 }
 
 module "resource_group" {
@@ -10,12 +19,17 @@ module "resource_group" {
   location            = var.location
 }
 
-module "apim" {
-  source              = "../../modules/apim"
-  apim_name           = var.apim_name
-  resource_group_name = module.resource_group.resource_group_name
-  location            = var.location
-  publisher_name      = var.publisher_name
-  publisher_email     = var.publisher_email
-  apim_sku            = var.apim_sku
+module "server_app_service" {
+  source                = "../../modules/server_app_service"
+  app_service_plan_name = "${var.resource_group_name}-asp"
+  server_app_name       = "${var.resource_group_name}-swa"
+  resource_group_name   = module.resource_group.resource_group_name
+  location              = var.location
+  app_service_plan_sku  = var.app_service_plan_sku
+  node_version_asp      = var.node_version_asp
+  server_app_port       = var.server_app_port
+  instance_count        = var.app_service_instance_count
+  maximum_count         = var.app_service_max_instance_count
+  health_check_path     = var.health_check_path
+  always_on             = var.always_on
 }

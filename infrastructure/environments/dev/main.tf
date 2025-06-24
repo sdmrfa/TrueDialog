@@ -30,4 +30,6 @@ module "server_app_service" {
   server_app_port       = var.server_app_port
   instance_count        = var.app_service_instance_count
   maximum_count         = var.app_service_max_instance_count
+  health_check_path     = var.health_check_path
+  always_on             = var.always_on
 }

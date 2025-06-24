@@ -23,37 +23,31 @@ variable "location" {
 variable "app_service_plan_sku" {
   description = "SKU for the App Service Plan"
   type        = string
-  default     = "P1v3"
 }
 
 variable "node_version_asp" {
   description = "Node.js version for the Web App"
   type        = string
-  default     = "20-lts"
 }
 
 variable "server_app_port" {
   description = "Port the application listens on"
   type        = string
-  default     = "8080"
 }
 
 variable "health_check_path" {
   description = "Path for the health check"
   type        = string
-  default     = "/health"
 }
 
 variable "always_on" {
   description = "Whether the app should be always on"
   type        = bool
-  default     = true
 }
 
 variable "instance_count" {
   description = "Initial number of App Service instances"
   type        = number
-  default     = 2
 }
 
 variable "maximum_count" {
