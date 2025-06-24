@@ -33,7 +33,9 @@ jobs:
         run: |
           mkdir deploy
           cp -r apps/server/dist deploy/dist
+          cp -r apps/server/node_modules deploy/node_modules
           cp apps/server/package.json deploy/
+          cp pnpm-lock.yaml deploy/
           cd deploy && zip -r ../release.zip .
 
 

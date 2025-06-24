@@ -23,7 +23,6 @@ resource "azurerm_linux_web_app" "server_web_app" {
 
   app_settings = {
     "WEBSITES_PORT"   = var.server_app_port
-    "SCM_DO_BUILD_DURING_DEPLOYMENT" = false
   }
 
   identity {
