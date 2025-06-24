@@ -12,18 +12,6 @@ variable "location" {
   default     = "Australia Central"
 }
 
-variable "location_fn" {
-  description = "Azure region for function"
-  type        = string
-  default     = "Canada Central"  
-}
-
-variable "location_cosmos_db" {
-  description = "Azure region for Cosmos DB"
-  type        = string
-  default     = "West US 3"
-}
-
 variable "cosmos_db_account_name" {
   description = "Name of the Cosmos DB account"
   type        = string
@@ -51,23 +39,23 @@ variable "cosmos_db_partition_key_path" {
 variable "cosmos_db_throughput" {
   description = "Throughput for the Cosmos DB database"
   type        = number
-  default     = 400
+  default     = 1000
 }
 
 variable "cosmos_db_max_throughput" {
   description = "Maximum throughput for the Cosmos DB container autoscale"
   type        = number
-  default     = 4000
+  default     = 5000
 }
 
 variable "cosmos_db_offer_type" {
-  description = "Offer type for Cosmos DB (usually Standard)"
+  description = "Offer type for Cosmos DB"
   type        = string
   default     = "Standard"
 }
 
 variable "cosmos_db_kind" {
-  description = "Kind of Cosmos DB account (e.g., GlobalDocumentDB)"
+  description = "Kind of Cosmos DB account"
   type        = string
   default     = "GlobalDocumentDB"
 }
@@ -96,16 +84,10 @@ variable "apim_sku" {
   default     = "Developer_1"
 }
 
-variable "environment" {
-  description = "Environment name"
-  type        = string
-  default     = "dev"
-}
-
 variable "app_service_plan_sku" {
   description = "SKU for the App Service Plan"
   type        = string
-  default     = "B1"
+  default     = "P1v3"
 }
 
 variable "node_version_asp" {
@@ -114,52 +96,45 @@ variable "node_version_asp" {
   default     = "20-lts"
 }
 
-variable "node_version_fn" {
-  description = "Node.js version for the Function"
-  type        = string
-  default     = "20"
-}
-
 variable "server_app_port" {
   description = "Port the application listens on"
   type        = string
   default     = "8080"
 }
 
-
-variable "frontend_app_port" {
-  description = "Port the application listens on"
-  type        = string
-  default     = "8080"
+variable "app_service_instance_count" {
+  description = "Initial number of App Service instances"
+  type        = number
+  default     = 2
 }
 
-variable "function_sku" {
-  description = "SKU for the Function App Service Plan (e.g., Y1 for Consumption)"
-  type        = string
-  default     = "Y1"
-}
-
-variable "static_web_app_name" {
-  description = "Name of the Static Web App"
-  type        = string
-  default     = "tdswa"
+variable "app_service_max_instance_count" {
+  type        = number
+  description = "Maximum number of instances for autoscale"
+  default     = 5
 }
 
 
-variable "swa_app_location" {
-  description = "Path to the React app source code in the repository"
+variable "front_door_name" {
+  description = "Name of the Azure Front Door instance"
   type        = string
-  default     = "/"
+  default     = "tdfd"
 }
 
-variable "swa_output_location" {
-  description = "Path to the React app build output directory"
+variable "app_gateway_name" {
+  description = "Name of the Azure Application Gateway"
   type        = string
-  default     = "build"
+  default     = "tdagw"
 }
 
-variable "swa_app_build_command" {
-  description = "Custom build command for the React app"
+variable "app_gateway_sku" {
+  description = "SKU for the Application Gateway"
   type        = string
-  default     = "npm install && npm run build"
+  default     = "WAF_v2"
+}
+
+variable "app_gateway_capacity" {
+  description = "Initial capacity for Application Gateway"
+  type        = number
+  default     = 1
 }

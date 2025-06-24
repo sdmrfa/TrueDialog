@@ -21,9 +21,9 @@ variable "location" {
 }
 
 variable "app_service_plan_sku" {
-  description = "SKU for the App Service Plan (e.g., B1, F1)"
+  description = "SKU for the App Service Plan"
   type        = string
-  default     = "B1" 
+  default     = "P1v3"
 }
 
 variable "node_version_asp" {
@@ -48,4 +48,15 @@ variable "always_on" {
   description = "Whether the app should be always on"
   type        = bool
   default     = true
+}
+
+variable "instance_count" {
+  description = "Initial number of App Service instances"
+  type        = number
+  default     = 2
+}
+
+variable "maximum_count" {
+  type        = number
+  description = "Maximum number of instances for autoscale"
 }
