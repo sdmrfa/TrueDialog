@@ -2,10 +2,11 @@
   "name": "server",
   "main": "dist/server.js",
   "scripts": {
-    "dev": "pnpm run build && pnpm run start",
-    "start": "nodemon dist/server.js",
+    "dev": "nodemon --watch src --ext ts --exec ts-node server.ts",
     "build": "tsc",
-    "clean": "rm -rf dist node_modules"
+    "start": "node dist/server.js",
+    "clean": "rm -rf dist node_modules",
+    "prepare": "pnpm run build"
   },
   "packageManager": "pnpm@10.12.2",
   "dependencies": {
