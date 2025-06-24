@@ -5,8 +5,7 @@
     "dev": "nodemon --watch src --ext ts --exec ts-node server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "clean": "rm -rf dist node_modules",
-    "prepare": "pnpm run build"
+    "clean": "rm -rf dist node_modules"
   },
   "packageManager": "pnpm@10.12.2",
   "dependencies": {
