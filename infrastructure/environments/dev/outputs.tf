@@ -1,11 +1,16 @@
 # File: Infrastructure/environment/Dev/outputs.tf
 
-output "resource_group_name" {
+output "rg_name" {
   description = "Name of the resource group"
-  value       = module.resource_group.resource_group_name
+  value       = module.resource_group.rg_name
 }
 
-output "server_web_app_url" {
-  description = "URL of the server Web App"
-  value       = module.server_app_service.server_web_app_url
+output "swa_url" {
+  description = "Url of the server Web App"
+  value       = module.server_web_app_service.swa_url
+}
+
+output "ohs_webhook_url" {
+  description = "Url of the opt out webhook for HubSpot"
+  value       = module.opt_out_hs_webhook.opt_out_hs_webhook_url
 }
