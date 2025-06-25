@@ -31,7 +31,7 @@ jobs:
 
       - name: Archive Function App
         run: |
-          cd apps/workers/opt-out-hs-webhook
+          cd apps/workers/opt-out-hs-webhookAdd commentMore actions
           zip -r ../../function-release.zip .
 
       - name: Upload artifact
@@ -61,6 +61,6 @@ jobs:
           app-name: 'tdrgohs'
           package: ./deploy
           publish-profile: ${{ secrets.AZURE_OHS_PUBLISH_PROFILE }}
-          sku: flexconsump`1ion
+          sku: flexconsumption
           remote-build: false
           
