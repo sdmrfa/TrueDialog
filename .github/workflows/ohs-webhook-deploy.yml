@@ -31,11 +31,8 @@ jobs:
 
       - name: Archive Function App
         run: |
-          mkdir deploy
-          cp -r apps/workers/opt-out-hs-webhook/dist/* deploy/
-          cp apps/workers/opt-out-hs-webhook/package.json deploy/
-          cp apps/workers/opt-out-hs-webhook/host.json deploy/
-          cd deploy && zip -r ../function-release.zip .
+          cd apps/workers/opt-out-hs-webhook
+          zip -r ../../function-release.zip .
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -64,7 +61,6 @@ jobs:
           app-name: 'tdrgohs'
           package: ./deploy
           publish-profile: ${{ secrets.AZURE_OHS_PUBLISH_PROFILE }}
-          clean: true
-          sku: flexconsumption
+          sku: flexconsump`1ion
           remote-build: false
           

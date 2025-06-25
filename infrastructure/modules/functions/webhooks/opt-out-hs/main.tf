@@ -38,6 +38,6 @@ resource "azurerm_function_app_flex_consumption" "opt_out_hs_webhook" {
   instance_memory_in_mb       = var.ohs_instance_memory_in_mb
 
   site_config {
-    app_command_line = "npm install && npm start"
+    # app_command_line = "npm install && npm start"
   }
 }
