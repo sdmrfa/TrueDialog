@@ -37,5 +37,7 @@ resource "azurerm_function_app_flex_consumption" "opt_out_hs_webhook" {
   maximum_instance_count      = var.ohs_maximum_instance_count
   instance_memory_in_mb       = var.ohs_instance_memory_in_mb
 
-  site_config {}
+  site_config {
+    app_command_line = "npm install && npm start"
+  }
 }
