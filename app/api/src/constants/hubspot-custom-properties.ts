@@ -43,6 +43,7 @@ const hubspotCustomProperties = [
         hidden: false,
       },
     ],
+    defaultValue: '1',
   },
   {
     name: 'total_inbound_sms_individual',

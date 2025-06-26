@@ -4,7 +4,7 @@ import TrueDialog from '../services/trueDialogClient'
 import axios from 'axios';
 import dotenv from 'dotenv';
 dotenv.config();
-import { saveHubSpotToken, getTokensByPortalId, saveAssociateInfo } from '../services/cosmosDb'
+import CosmosService from '../services/cosmos/cosmosDb'
 
 
 
@@ -77,7 +77,7 @@ class AuthController {
       );
       const portalId = infoRes.data.hub_id.toString();
       console.log( `Retrieved portalId: ${ portalId }` );
-      await saveHubSpotToken( portalId, access_token, refresh_token );
+      await CosmosService.saveHubSpotToken( portalId, access_token, refresh_token );
 
       res.status( 200 ).json( { message: 'Success', portalId, refresh_token } );
       await createHubspotProperties( access_token );
@@ -100,7 +100,7 @@ class AuthController {
       res.status( 400 ).json( { success: false, message: 'Invalid TrueDialog credentials' } );
       return
     }
-    const tokens = await getTokensByPortalId( portalId );
+    const tokens = await CosmosService.getTokensByPortalId( portalId );
     if ( !tokens ) {
       throw new Error( `No tokens found for portalId ${ portalId }` );
     }
@@ -112,7 +112,7 @@ class AuthController {
       trueDialogApiKey,
       trueDialogApiSecret,
     };
-    await saveAssociateInfo( userEmail, portalId, clientHubspotTrueDialogAccountInfo );
+    await CosmosService.saveAssociateInfo( userEmail, portalId, clientHubspotTrueDialogAccountInfo );
     res.status( 200 ).json( { message: 'Successfully Associated HubSpot-TrueDialog Accounts' } );
 
   }
