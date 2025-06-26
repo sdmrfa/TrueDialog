@@ -1,4 +1,8 @@
-# Azure API Management Instance
+# File: Infrastructure/modules/apim/main.tf
+
+# ========================
+# API MANAGEMENT INSTANCE
+# ========================
 resource "azurerm_api_management" "main" {
   name                = var.apim_name
   location            = var.location
@@ -6,15 +10,17 @@ resource "azurerm_api_management" "main" {
   publisher_name      = var.publisher_name
   publisher_email     = var.publisher_email
   sku_name            = var.apim_sku
+
   identity {
     type = "SystemAssigned"
   }
 }
+
 # ========================
 # FRONTEND API
 # ========================
 resource "azurerm_api_management_api" "frontend" {
-  name                = "frontend-app"
+  name                = "frontend-api"
   resource_group_name = var.resource_group_name
   api_management_name = azurerm_api_management.main.name
   revision            = "1"
@@ -22,16 +28,20 @@ resource "azurerm_api_management_api" "frontend" {
   path                = "frontend"
   protocols           = ["https"]
   service_url         = var.frontend_url
+  subscription_required = false
 }
+
 resource "azurerm_api_management_api_policy" "frontend_policy" {
   api_name            = azurerm_api_management_api.frontend.name
   api_management_name = azurerm_api_management.main.name
   resource_group_name = var.resource_group_name
+
   xml_content = <<XML
 <policies>
   <inbound>
     <base />
     <set-backend-service base-url="${var.frontend_url}" />
+    <rewrite-uri template="/" copy-unmatched-params="true" />
   </inbound>
   <backend>
     <base />
@@ -45,19 +55,22 @@ resource "azurerm_api_management_api_policy" "frontend_policy" {
 </policies>
 XML
 }
-resource "azurerm_api_management_api_operation" "frontend_get_root" {
-  operation_id        = "get-frontend"
+
+resource "azurerm_api_management_api_operation" "frontend_get" {
+  operation_id        = "frontend-get-all"
   api_name            = azurerm_api_management_api.frontend.name
   api_management_name = azurerm_api_management.main.name
   resource_group_name = var.resource_group_name
-  display_name = "GET Frontend Root"
-  method       = "GET"
-  url_template = "/"
+  display_name        = "Wildcard GET"
+  method              = "GET"
+  url_template        = "/*"
+
   response {
-    status_code      = 200
-    description = "Frontend Root Loaded"
+    status_code = 200
+    description = "Wildcard GET for frontend"
   }
 }
+
 # ========================
 # BACKEND API
 # ========================
@@ -70,16 +83,20 @@ resource "azurerm_api_management_api" "backend" {
   path                = "backend"
   protocols           = ["https"]
   service_url         = var.backend_url
+  subscription_required = false
 }
+
 resource "azurerm_api_management_api_policy" "backend_policy" {
   api_name            = azurerm_api_management_api.backend.name
   api_management_name = azurerm_api_management.main.name
   resource_group_name = var.resource_group_name
+
   xml_content = <<XML
 <policies>
   <inbound>
     <base />
     <set-backend-service base-url="${var.backend_url}" />
+    <rewrite-uri template="/" copy-unmatched-params="true" />
   </inbound>
   <backend>
     <base />
@@ -93,19 +110,41 @@ resource "azurerm_api_management_api_policy" "backend_policy" {
 </policies>
 XML
 }
+
 resource "azurerm_api_management_api_operation" "backend_get" {
-  operation_id        = "get-backend"
+  operation_id        = "backend-get-all"
   api_name            = azurerm_api_management_api.backend.name
   api_management_name = azurerm_api_management.main.name
   resource_group_name = var.resource_group_name
-  display_name = "GET Backend Endpoint"
-  method       = "GET"
-  url_template = "/"
+  display_name        = "Wildcard GET"
+  method              = "GET"
+  url_template        = "/*"
+
   response {
-    status_code      = 200
-    description = "Backend Data Fetched"
+    status_code = 200
+    description = "Wildcard GET for backend"
   }
 }
+
+resource "azurerm_api_management_api_operation" "backend_post" {
+  operation_id        = "backend-post-all"
+  api_name            = azurerm_api_management_api.backend.name
+  api_management_name = azurerm_api_management.main.name
+  resource_group_name = var.resource_group_name
+  display_name        = "Wildcard POST"
+  method              = "POST"
+  url_template        = "/*"
+
+  request {
+    description = "Wildcard POST body"
+  }
+
+  response {
+    status_code = 200
+    description = "Wildcard POST for backend"
+  }
+}
+
 # ========================
 # WEBHOOK API
 # ========================
@@ -115,19 +154,23 @@ resource "azurerm_api_management_api" "webhook" {
   api_management_name = azurerm_api_management.main.name
   revision            = "1"
   display_name        = "Webhook API"
-  path                = "api/webhook"
+  path                = "webhook"
   protocols           = ["https"]
   service_url         = var.webhook_url
+  subscription_required = false
 }
+
 resource "azurerm_api_management_api_policy" "webhook_policy" {
   api_name            = azurerm_api_management_api.webhook.name
   api_management_name = azurerm_api_management.main.name
   resource_group_name = var.resource_group_name
+
   xml_content = <<XML
 <policies>
   <inbound>
     <base />
-    <set-backend-service base-url="${var.webhook_url}/api/webhook" />
+    <set-backend-service base-url="${var.webhook_url}" />
+    <rewrite-uri template="/api/webhook" copy-unmatched-params="true" />
   </inbound>
   <backend>
     <base />
@@ -141,24 +184,22 @@ resource "azurerm_api_management_api_policy" "webhook_policy" {
 </policies>
 XML
 }
-resource "azurerm_api_management_api_operation" "webhook_post_dynamic" {
-  operation_id        = "post-webhook-dynamic"
+
+resource "azurerm_api_management_api_operation" "webhook_post" {
+  operation_id        = "webhook-post-all"
   api_name            = azurerm_api_management_api.webhook.name
   api_management_name = azurerm_api_management.main.name
   resource_group_name = var.resource_group_name
-  display_name = "POST Webhook"
-  method       = "POST"
-  url_template = "/{source}"
-  template_parameter {
-    name     = "source"
-    required = true
-    type     = "string"
-  }
+  display_name        = "Wildcard POST"
+  method              = "POST"
+  url_template        = "/*"
+
   request {
-    description = "Dynamic Webhook POST"
+    description = "Wildcard POST body"
   }
+
   response {
     status_code = 200
-    description = "Webhook from dynamic source processed"
+    description = "Wildcard POST for webhook"
   }
 }
