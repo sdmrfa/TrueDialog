@@ -31,8 +31,11 @@ jobs:
 
       - name: Archive Function App
         run: |
-          cd apps/workers/opt-out-hs-webhook
-          zip -r ../../../function-release.zip .
+          mkdir deploy
+          cp -r apps/workers/opt-out-hs-webhook/dist deploy/dist
+          cp apps/workers/opt-out-hs-webhook/package.json deploy/
+          cp apps/workers/opt-out-hs-webhook/host.json deploy/
+          cd deploy && zip -r ../function-release.zip .
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
