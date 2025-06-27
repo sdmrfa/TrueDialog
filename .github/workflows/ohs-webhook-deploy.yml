@@ -32,9 +32,7 @@ jobs:
       - name: Prepare deployment package
         run: |
           mkdir deploy
-          cp -r apps/workers/opt-out-hs-webhook/dist deploy/dist
-          cp apps/workers/opt-out-hs-webhook/host.json deploy/
-          cp apps/workers/opt-out-hs-webhook/package.json deploy/
+          cp -r apps/workers/opt-out-hs-webhook/ deploy/
           cd deploy && zip -r ../release.zip .
 
       - name: Upload artifact
