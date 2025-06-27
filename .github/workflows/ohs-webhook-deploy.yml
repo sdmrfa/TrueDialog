@@ -24,10 +24,10 @@ jobs:
         run: npm install -g pnpm
 
       - name: Install dependencies
-        run: pnpm install --filter=apps/workers/opt-out-hs-webhook... --frozen-lockfile
+        run: pnpm install --filter=opt-out-hs-webhook... --frozen-lockfile
 
       - name: Build worker
-        run: pnpm --filter=apps/workers/opt-out-hs-webhook build
+        run: pnpm --filter=opt-out-hs-webhook build
 
       - name: Prepare deployment package
         run: |
