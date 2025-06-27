@@ -55,4 +55,4 @@ jobs:
           path: .
 
       - name: Unzip package
-        run: unzip -o release.z
+        run: unzip -o release.zip
