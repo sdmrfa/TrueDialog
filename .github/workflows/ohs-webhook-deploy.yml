@@ -8,34 +8,23 @@ on:
 
 jobs:
   build:
-    name: Build Azure Function
+    name: Build Azure Function Package
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-
       - name: Install pnpm
         run: npm install -g pnpm
 
       - name: Install dependencies
-        run: pnpm install --filter=opt-out-hs-webhook... --frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
-      - name: Build Function App
-        run: pnpm --filter=opt-out-hs-webhook build
-
-      - name: Archive Function App
+      - name: Archive entire function folder for remote build
         run: |
-          mkdir deploy
-          cp -r apps/workers/opt-out-hs-webhook/dist deploy/dist
-          cp apps/workers/opt-out-hs-webhook/package.json deploy/
-          cp apps/workers/opt-out-hs-webhook/host.json deploy/
-          cd deploy && zip -r ../function-release.zip .
+          cd apps/workers/opt-out-hs-webhook
+          zip -r ../../../function-release.zip .
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
@@ -55,15 +44,11 @@ jobs:
           name: function-app
           path: .
 
-      - name: Unzip artifact
-        run: unzip -o function-release.zip -d deploy
-
       - name: Deploy to Azure Function App
         uses: Azure/functions-action@v1
         with:
           app-name: 'tdrgohs'
-          package: ./deploy
+          package: function-release.zip
           publish-profile: ${{ secrets.AZURE_OHS_PUBLISH_PROFILE }}
           sku: flexconsumption
           remote-build: true
-          
