@@ -72,4 +72,4 @@ jobs:
           publish-profile: ${{ secrets.AZURE_OHS_PUBLISH_PROFILE }}
           package: ./deploy
           sku: flexconsumption
-          remote-build: false
+          remote-build: true
