@@ -62,7 +62,7 @@ variable "swa_always_on" {
   default     = true
 }
 
-# Opt-out Health Service Webhook
+# Opt-out HubSpot Webhook
 variable "ohs_asp_sku" {
   description = "SKU for the App Service Plan"
   type        = string
@@ -105,6 +105,54 @@ variable "ohs_maximum_instance_count" {
 }
 
 variable "ohs_instance_memory_in_mb" {
+  description = "Memory allocated per instance for the opt-out hubspot webhook"
+  type        = number
+  default     = 2048
+}
+
+# Opt-out Truedialog Webhook
+variable "otd_asp_sku" {
+  description = "SKU for the App Service Plan"
+  type        = string
+  default     = "FC1"
+}
+
+variable "otd_asp_location" {
+  description = "Azure region for resources"
+  type        = string
+  default     = "Canada Central"
+}
+variable "otd_astg_location" {
+  description = "Azure region for the Application Service"
+  type        = string
+  default     = "Canada Central"
+}
+
+variable "otd_astg_tier" {
+  description = "Tier for the Application Service"
+  type        = string
+  default     = "Standard"
+}
+
+variable "otd_runtime_name" {
+  description = "Name of the runtime for the opt-out hubspot webhook"
+  type        = string
+  default     = "node"
+}
+
+variable "otd_node_version" {
+  description = "Node.js version for the opt-out hubspot webhook"
+  type        = string
+  default     = "20"
+}
+
+variable "otd_maximum_instance_count" {
+  description = "Maximum number of instances for the opt-out hubspot webhook"
+  type        = number
+  default     = 50
+}
+
+variable "otd_instance_memory_in_mb" {
   description = "Memory allocated per instance for the opt-out hubspot webhook"
   type        = number
   default     = 2048

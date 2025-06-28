@@ -50,3 +50,18 @@ module "opt_out_hs_webhook" {
   ohs_maximum_instance_count = var.ohs_maximum_instance_count
   ohs_instance_memory_in_mb  = var.ohs_instance_memory_in_mb
 }
+
+module "opt_out_td_webhook" {
+  source                     = "../../modules/functions/webhooks/opt-out-td"
+  rg_name                    = module.resource_group.rg_name
+  otd_astg_location          = var.otd_astg_location
+  otd_astg_tier              = var.otd_astg_tier
+  otd_asp_name               = "${var.rg_name}otd-asp"
+  otd_asp_location           = var.otd_asp_location
+  otd_asp_sku                = var.otd_asp_sku
+  otd_name                   = "${var.rg_name}otd"
+  otd_runtime_name           = var.otd_runtime_name
+  otd_node_version           = var.otd_node_version
+  otd_maximum_instance_count = var.otd_maximum_instance_count
+  otd_instance_memory_in_mb  = var.otd_instance_memory_in_mb
+}

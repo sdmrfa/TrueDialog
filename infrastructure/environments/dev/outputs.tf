@@ -14,3 +14,8 @@ output "ohs_webhook_url" {
   description = "Url of the opt out webhook for HubSpot"
   value       = module.opt_out_hs_webhook.opt_out_hs_webhook_url
 }
+
+output "otd_webhook_url" {
+  description = "Url of the opt out webhook for TrueDialog"
+  value       = module.opt_out_td_webhook.opt_out_td_webhook_url
+}
