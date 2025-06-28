@@ -36,4 +36,4 @@ jobs:
           publish-profile: ${{ secrets.AZURE_OHS_PUBLISH_PROFILE }}
           package: './apps/workers/opt-out-hs-webhook'
           sku: flexconsumption
-          remote-build: true
+          remote-build: false
