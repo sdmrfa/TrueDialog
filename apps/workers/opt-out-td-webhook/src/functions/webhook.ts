@@ -52,6 +52,6 @@ export async function optOutWebhook(
 app.http("OptOutWebhook", {
   methods: ["GET", "POST"],
   authLevel: "anonymous",
-  route: "webhook/opt-out-hs",
+  route: "webhook/opt-out-td",
   handler: optOutWebhook,
 });
