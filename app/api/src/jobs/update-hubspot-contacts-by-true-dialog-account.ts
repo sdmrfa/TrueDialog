@@ -19,16 +19,18 @@ const updateHubspotContactsByTrueDialogAccount = async (
       } = account;
 
       await Promise.all(
-        hubspotContacts.map(({ id }) =>
-          updateHubspotContact({
-            contactId: id,
-            refreshedHubspotAccessToken,
-            propertiesToUpdate,
-          })
-        )
+        hubspotContacts.map(async ({ id }) => {
+          try {
+            const response = await updateHubspotContact({contactId: id,refreshedHubspotAccessToken,propertiesToUpdate,});
+            console.log(`Updated contact ${id}:`, response);
+          } catch (err: any) {
+            console.error(`Failed to update contact ${id}:`, err.message);
+          }
+        })
       );
     })
   );
 };
+
 
 export default updateHubspotContactsByTrueDialogAccount;

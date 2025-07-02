@@ -15,7 +15,7 @@ const getTrueDialogContactSubscriptions = async ({
     const trueDialogContactSubscriptions = await trueDialogAxiosInstance.get<
       TrueDialogContactSubscription[]
     >(`/account/${trueDialogAccountId}/contact/${trueDialogContactId}/subscription`);
-console.log("Subscription details---->",trueDialogAxiosInstance)
+// console.log("Subscription details---->",trueDialogAxiosInstance)
     return trueDialogContactSubscriptions.data;
   } catch (err) {
     formatAndOutputErrorMessage({

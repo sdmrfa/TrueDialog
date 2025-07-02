@@ -11,8 +11,7 @@ const getHubspotContactById = async ( {
     refreshedHubspotAccessToken: HubspotAccessToken;
 } ): Promise<SimplePublicObject | undefined> => {
     try {
-        console.log( "hubspotContactId===>", hubspotContactId )
-        console.log( "refreshedHubspotAccessToken===>", refreshedHubspotAccessToken )
+        // console.log( "refreshedHubspotAccessToken===>", refreshedHubspotAccessToken )
         const properties = Object.values( HubspotContactPropertyNamesEnum );
 
         return await HubSpotClient( refreshedHubspotAccessToken.access_token ).crm.contacts.basicApi.getById( hubspotContactId, properties );

@@ -1,11 +1,11 @@
-import express, { Express, Request, Response } from 'express';
 import dotenv from 'dotenv';
+dotenv.config();
+import express, { Express, Request, Response } from 'express';
 import { initCosmos } from './src/services/cosmos/cosmosInit';
 import { initPostgres } from './src/services/postgresql/postgresInit';
 const cors = require( 'cors' );
 
 
-dotenv.config();
 const app: Express = express();
 const port = 8080;
 
@@ -29,7 +29,7 @@ app.use( '/api/webhook', webhookRoutes );
 
 app.listen( port, async () => {
   await initCosmos();
-  await initPostgres();
+  // await initPostgres();
   console.log( `Server running at-- http://localhost:${ port }` );
 } );
 

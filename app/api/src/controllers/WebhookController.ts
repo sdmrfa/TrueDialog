@@ -64,7 +64,7 @@ const getSubscriptions = async ( portalId: string, hubSpotAccessToken: string, h
   if ( !trueDialogContact ) {
     throw new Error( "TrueDialog contact not found." );
   }
-  console.log( "trueDialogContact Details ===>", trueDialogContact )
+  // console.log( "trueDialogContact Details ===>", trueDialogContact )
   const contactSubscriptions: Array<TrueDialogContactSubscriptionUpdateInput & { subscriptionId: number }>
     = await getTrueDialogContactSubscriptions( {
       trueDialogContactId: trueDialogContact.id,
@@ -89,7 +89,7 @@ const getTrueDialogKeys = async ( portalId: string, hubSpotAccessToken: string )
   const response = await axiosClient.get( `https://api.hubapi.com/oauth/v1/access-tokens/${ hubSpotAccessToken }` );
   const user = response.data.user;
   const hash = String( `${ user }-${ portalId }` );
-  console.log( "User Hash key ==>", hash )
+  // console.log( "User Hash key ==>", hash )
   const trueDialogKeys = await CosmosService.getClientHubspotTrueDialogAccountInfoById( hash );
 
   if ( !trueDialogKeys ) {
@@ -127,7 +127,8 @@ class WebhookController {
       console.log( 'Hubspot contact not found' );
       throw new Error( "TrueDialog contact not found." );
     }
-
+    console.log( "Accepted for processing (HubSpot-TrueDialog)" )
+    res.status( 200 ).json( { message: 'Accepted for processing (HubSpot-TrueDialog)' } );
     const {
       trueDialogContactId,
       trueDialogAxiosInstance,
@@ -155,16 +156,15 @@ class WebhookController {
       "emailEnabled": false,
       "voiceEnabled": false
     }
-
     // console.log( "Payload=========>", payload )
     try {
       const response = await axios.put( `https://api.truedialog.com/api/v2.1/account/${ trueDialogAccountId }/contact/${ trueDialogContactId }/subscription/${ subScriptionId }?overrideSubscription=overrideSubscription`, payload, { headers } );
       console.log( "Response from TrueDialog=============>", response.data )
-      res.status( 200 ).json( response.data );
+      // res.status( 200 ).json( response.data );
 
     } catch ( error: any ) {
-      console.error( 'Token exchange failed:', error.response );
-      // res.status( 500 ).json( {
+      console.error( 'Problem with Hubspot To TrueDialog Opt-out:', error.response );
+      // res.status( 200 ).json( {
       //   error: 'OAuth token exchange failed',
       //   details: error.response?.data || error.message,
       // } );
@@ -177,7 +177,8 @@ class WebhookController {
       const { PhoneNumber: phoneNumber, Subscribed: subscribed, AccountId: trueDialogAccountId, } = req.body;
       const hubSpotAccounts = await CosmosService.getAllHubSpotAccountsByAccountId( trueDialogAccountId );
       // console.log( "hubSpotAccounts====>", hubSpotAccounts )
-
+      console.log( "Accepted for processing (TrueDialog-HubSpot)" )
+      res.status( 200 ).json( { message: 'Accepted for processing (TrueDialog-HubSpot)' } );
       const contactsToUpdate = [];
 
       for ( const account of hubSpotAccounts ) {
@@ -212,11 +213,13 @@ class WebhookController {
       // console.log( "contactsToUpdate==>", contactsToUpdate )
       const dataResponse = await updateHubspotContactsByTrueDialogAccount( contactsToUpdate );
       console.log( "Response from Hubspot===>", dataResponse )
+      // res.status( 200 ).json( dataResponse );
+
       // return contactsToUpdate;
 
     } catch ( error ) {
       console.error( "Error processing webhook:", error );
-      res.status( 500 ).send( "Internal Server Error" );
+      // res.status( 200 ).send( "Internal Server Error" );
     }
   }
 

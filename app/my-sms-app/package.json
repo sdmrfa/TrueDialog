@@ -1,0 +1,22 @@
+{
+  "name": "one-to-one",
+  "main": "dist/src/functions/*.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "start": "func start",
+    "dev": "concurrently \"npm run watch\" \"func start\""
+  },
+  "packageManager": "pnpm@10.12.4",
+  "dependencies": {
+    "@azure/functions": "4.7.3",
+    "axios": "^1.10.0",
+    "concurrently": "^9.2.0",
+    "dotenv": "^17.0.0",
+    "nodemon": "^3.1.10"
+  },
+  "devDependencies": {
+    "@types/node": "~24.0.7",
+    "typescript": "^5.8.3"
+  }
+}

@@ -24,7 +24,6 @@ const updateHubspotContact = async ( {
                 { properties: cleanedProperties }
             )
         );
-        console.log( "updatedContact===>", updatedContact )
         return { ...updatedContact };
     } catch ( err ) {
         formatAndOutputErrorMessage( {

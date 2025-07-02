@@ -26,11 +26,11 @@ const toastOptions: ToastOptions = {
 const TrueDialogChat: React.FC = () => {
   const [searchParams] = useSearchParams()
 
-   const hsPortalId = searchParams.get('hsPortalId') || 242746588
-  const userEmail = searchParams.get('userEmail') || 'prag@growtomation.in'
-  const phoneNumber = decodeURI(searchParams.get('phone') || '+12123656566')
-  const contactName = decodeURI(searchParams.get('contactName') || 'Prag Singh 2')
-  const contactId = searchParams.get('contactId') || '151181531886'
+  const hsPortalId = searchParams.get( 'hsPortalId' ) || 242746588
+  const userEmail = searchParams.get( 'userEmail' ) || 'prag@growtomation.in'
+  const phoneNumber = decodeURI( searchParams.get( 'phone' ) || '+12123656566' )
+  const contactName = decodeURI( searchParams.get( 'contactName' ) || 'Prag Singh 2' )
+  const contactId = searchParams.get( 'contactId' ) || '151181531886'
 
   // const hsPortalId = searchParams.get( 'hsPortalId' ) || ''
   // const userEmail = searchParams.get( 'userEmail' ) || ''
@@ -42,6 +42,7 @@ const TrueDialogChat: React.FC = () => {
   const [channels, setChannels] = useState<{ id: string; label: string; value: string }[]>( [] );
   // const [recipient, setRecipient] = useState<string>('')
   const [smsContent, setSmsContent] = useState( "" );
+  const [refresh, setRefresh] = useState( false );
   const maxChars = 160;
 
   console.log( "hsPortalId===>", hsPortalId )
@@ -54,6 +55,10 @@ const TrueDialogChat: React.FC = () => {
     fetchChannels()
     // getRecipientPhoneNumber()
   }, [] )
+
+  useEffect( () => {
+    fetchConversations()
+  }, [refresh] )
 
   useEffect( () => {
     if ( channels.length && !selectChannel ) {
@@ -74,6 +79,12 @@ const TrueDialogChat: React.FC = () => {
       } ) );
     setChannels( parsedChannels );
   };
+  const fetchConversations = async (): Promise<void> => {
+    const results = await axiosInstance.post( '/get-conversations', { hsPortalId, userEmail, phoneNumber } );
+
+    console.log( "Get Conversations ===>", results.data.data )
+    setConversation( results.data.data );
+  };
   // console.log("channels===>",channels)
   // console.log("selectChannel===>",selectChannel)
 
@@ -85,13 +96,23 @@ const TrueDialogChat: React.FC = () => {
 
   const handleSubmit = async ( event: FormEvent ): Promise<void> => {
     const conversationData = {
-      sender: phoneNumber,
-      reciever: selectChannel,
+      id: `temp-${ Date.now() }`,
+      accountId: 0,
+      accountName: "Local Draft",
+      campaignId: null,
+      sent: true,
+      logDate: new Date().toISOString(),
+      channelId: selectChannel,
+      channelName: selectChannel,
+      target: phoneNumber,
+      contactId: contactId || null,
       message: smsContent,
-      incoming: false,
-      status:"sending",
-      createdAt: Date.now()
+      statusId: null,
+      actionId: null,
+      count: 1,
+      media: []
     }
+
     setConversation( prev => [...prev, conversationData] );
     setSmsContent( "" )
     event.preventDefault()
@@ -120,15 +141,14 @@ const TrueDialogChat: React.FC = () => {
     <div className="chat-fullscreen-container">
       <div className="chat-body">
         <div className="chat-history">
-          <div className="sync-icon"><FaSyncAlt size={12} /></div>
-
-          {conversation.map( ( msg, index ) => (
+          <div className="sync-icon" onClick={() => setRefresh( !refresh )}><FaSyncAlt size={12} /></div>
+          {[...conversation].reverse().map( ( msg, index ) => (
             <div
               key={index}
-              className={`chat-bubble ${ msg.incoming ? 'incoming' : 'outgoing' }`}
+              className={`chat-bubble ${ msg.sent ? 'outgoing' : 'incoming' }`}
             >
               <div className="message-text">{msg.message}</div>
-              <div className="message-time">{new Date( msg.createdAt ).toLocaleTimeString()}</div>
+              <div className="message-time">{new Date( msg.logDate ).toLocaleTimeString()}</div>
             </div>
           ) )}
         </div>
@@ -144,12 +164,13 @@ const TrueDialogChat: React.FC = () => {
         </div>
 
         <div className="chat-bottom">
-          <input
+          <textarea
             className="sms-input"
-            type="text"
             value={smsContent}
             onChange={( e ) => setSmsContent( e.target.value )}
             maxLength={maxChars}
+            rows={1}
+          // placeholder="Type your message..."
           />
           <button className="chat-btn"><FaFileAlt /></button>
           <button className="chat-btn"><FaImage /></button>

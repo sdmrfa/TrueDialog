@@ -12,8 +12,8 @@ const formatPhoneNumber = ( phonenumber: string | null ): string => {
     else if ( phonenumber && phonenumber.indexOf( "+" ) === -1 ) {
       phonenumber = "+1" + phonenumber;
     }
-    console.log( "Recieved Number===>", phonenumber )
-    console.log( phonenumber.replaceAll( "(", "" ).replaceAll( ")", "" ).replaceAll( "-", "" ).replaceAll( " ", "" ) )
+    // console.log( "Recieved Number===>", phonenumber )
+    // console.log( phonenumber.replaceAll( "(", "" ).replaceAll( ")", "" ).replaceAll( "-", "" ).replaceAll( " ", "" ) )
     return phonenumber.replaceAll( "(", "" ).replaceAll( ")", "" ).replaceAll( "-", "" ).replaceAll( " ", "" );
   } catch ( err ) {
     formatAndOutputErrorMessage( {
